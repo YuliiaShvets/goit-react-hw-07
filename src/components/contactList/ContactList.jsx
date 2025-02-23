@@ -1,18 +1,19 @@
-import s from "./ContactList.module.css";
-import Contact from "../contact/Contact";
 import { useSelector } from "react-redux";
+import { selectFilteredContacts, selectLoading, selectError } from "../../redux/contactsSlice";
+import Contact from "../contact/Contact.jsx";
+import s from "./ContactList.module.css";
 
 const ContactList = () => {
-  const contacts = useSelector((state) => state.contacts.items);
-  const filter = useSelector((state) => state.filter?.name || ""); 
+  const contacts = useSelector(selectFilteredContacts);
+  const loading = useSelector(selectLoading);
+  const error = useSelector(selectError);
 
-  const filteredData = contacts.filter((item) =>
-    item.name.toLowerCase().includes(filter.toLowerCase()) 
-  );
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <ul className={s.contact}>
-      {filteredData.map(({ id, name, number }) => (
+      {contacts.map(({ id, name, number }) => (
         <Contact key={id} id={id} name={name} number={number} />
       ))}
     </ul>
@@ -20,3 +21,4 @@ const ContactList = () => {
 };
 
 export default ContactList;
+
